@@ -8,12 +8,19 @@ public class PhysicsMovement : MonoBehaviour
     public float moveSpeed;
     public float turnSpeed;
     public float jumpForce;
+    public bool onGround;
+    public float Playerlife;
+    public bool gamemanager;
 
+   public Vector3 spawnPosition;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         // Automatically looks for a Rigidbody component on the current GameObject
         rb = GetComponent<Rigidbody>();
+
+        spawnPosition=transform.position;
+        Playerlife=3;
     }
 
     // Update is called once per frame
@@ -51,6 +58,49 @@ public class PhysicsMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+     
+        }
+
+        //----Respawning---\\\\
+        if (transform.position.y < 0 )
+        {
+            rb.position = spawnPosition; 
+        }
+        //If Spacebar
+         if(Input.GetKeyDown(KeyCode.Space))
+         {
+            Playerlife-= 1;
+         }
+
+         if(Playerlife==0)
+         
+            gamemanager= false;
+         
+    }
+
+     ///Check if the player ahs come into contact with the ground.
+     /// If they have they should be able to jump
+    void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.tag == "Ground")
+        {
+            onGround=true;
+        }
+        if(collision.gameObject.tag == "Hazard")
+        {
+            Playerlife-= 1;
+        }
+
+    }
+    // Check if the player has left the ground.
+    // If they have, they cannot jump anymore.
+    void OnCollisionExit(Collision collision)
+    {
+        if(collision.gameObject.tag == "Ground")
+        {
+            onGround= false;
         }
     }
+
+
 }
