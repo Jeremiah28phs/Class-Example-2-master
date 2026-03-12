@@ -11,6 +11,8 @@ public class PhysicsMovement : MonoBehaviour
     public bool onGround;
     public float Playerlife;
     public bool gamemanager;
+    public float TimeinLevel;
+     
 
    public Vector3 spawnPosition;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -26,6 +28,9 @@ public class PhysicsMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        TimeinLevel+= Time.deltaTime;
+
         // ------- Movement -------
 
         // Creates one vector where X is the input from A and D, and Z is the input from X and Y
@@ -50,6 +55,19 @@ public class PhysicsMovement : MonoBehaviour
 
             // Need to change the target rotation to a quaternion before passing it to rigidbody
             rb.MoveRotation(Quaternion.Euler(targetRotation));
+
+        }
+        if(Input.GetKey(KeyCode.Q))
+        {
+              // Start from the current rotation, converting it to a Vector
+            Vector3 currentRotation = rb.rotation.eulerAngles;
+
+            // Add to the y-coordinate of the angle to rotate clockwise
+            Vector3 targetRotation = currentRotation + Vector3.down * turnSpeed * Time.deltaTime;
+
+            // Need to change the target rotation to a quaternion before passing it to rigidbody
+            rb.MoveRotation(Quaternion.Euler(targetRotation));
+
         }
 
         // ------- Jumping -------
@@ -67,14 +85,21 @@ public class PhysicsMovement : MonoBehaviour
             rb.position = spawnPosition; 
         }
         //If Spacebar
-         if(Input.GetKeyDown(KeyCode.Space))
-         {
-            Playerlife-= 1;
-         }
+        
+         
 
          if(Playerlife==0)
          
             gamemanager= false;
+            if(Input.GetKeyDown(KeyCode.LeftShift))
+            {
+                moveSpeed = moveSpeed * 2;
+            }
+            if(Input.GetKeyUp(KeyCode.LeftShift))
+            {
+                moveSpeed = moveSpeed / 2;
+            }
+
          
     }
 
@@ -90,6 +115,19 @@ public class PhysicsMovement : MonoBehaviour
         {
             Playerlife-= 1;
         }
+          Debug.Log("Collided with " + collision.gameObject.name);
+
+            if(collision.gameObject.tag == "Hazard")
+   
+            {
+                Debug.Log("Ouch that hurt!");
+            } 
+    
+          if(collision.gameObject.tag == "Finish")
+
+        {
+            Debug.Log("You Won");
+        }
 
     }
     // Check if the player has left the ground.
@@ -102,5 +140,10 @@ public class PhysicsMovement : MonoBehaviour
         }
     }
 
+        
+        
+        
+       
+        
 
 }

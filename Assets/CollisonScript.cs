@@ -12,8 +12,12 @@ public class CollisonScript : MonoBehaviour
             {
                 Debug.Log("Ouch that hurt!");
             } 
-   
-   
+    
+          if(collision.gameObject.tag == "Finish")
+
+        {
+            Debug.Log("You Won");
+        }
    
    
     }
